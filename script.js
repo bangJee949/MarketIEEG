@@ -1,4 +1,3 @@
-
 let storedApiKey = "";
 
 function saveApiKey() {
@@ -24,26 +23,16 @@ async function generateKeywords() {
     return;
   }
 
-  try {
-    const prompt = `Generate exactly 45 keywords in English based on the title: "${title}".
-Rules:
-- All keywords must be lowercase, in 1 word only (no multi-word phrases).
-- First keyword must directly relate to the title.
-- Keywords must be relevant to Adobe Stock standards (accurate, searchable, visual).
-- Avoid brands, repetition, or abstract irrelevant words.
-- Output must be a single line, comma-separated only.`;
+  const prompt = `You are a metadata assistant for stock contributors.\\n\\nPlease generate exactly 45 relevant keywords based on this stock content title: "${title}".\\n\\n🔑 GUIDELINES:\\n- All keywords must be in one word only (e.g., "sunset", not "sunset light").\\n- No brands, names, or locations unless generic.\\n- Keywords must be highly relevant and searchable.\\n- First keyword must be the most important topic (from the title).\\n- Separate keywords with commas only, no numbering or line breaks.`;
 
+  try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${storedApiKey}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }]
+        contents: [{ parts: [{ text: prompt }] }]
       })
     });
 
