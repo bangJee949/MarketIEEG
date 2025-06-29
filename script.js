@@ -86,4 +86,10 @@ Please return exactly 45 relevant keywords in English, based on the title above.
   }
 }
 
+// ✅ Tambahan fungsi copy yang diperbaiki
+function copyKeywords() {
+  const output = document.getElementById("output");
+  output.select(); // WAJIB untuk memilih isi textarea
+  document.execCommand("copy");
+  alert("✅ Keyword berhasil dicopy!");
 }
