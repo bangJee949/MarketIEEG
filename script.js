@@ -84,6 +84,6 @@ Please return exactly 45 relevant keywords in English, based on the title above.
     status.innerHTML = "⚠️ Gagal menghasilkan keyword. Periksa API key atau format judul.";
     status.style.color = "red";
   }
-
+}
 
 }
