@@ -43,7 +43,7 @@ Please return exactly 45 relevant keywords in English, based on the title above.
 
   try {
     const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,12 +56,10 @@ Please return exactly 45 relevant keywords in English, based on the title above.
     );
 
     const data = await res.json();
-    console.log("RESPONS API:", data); // Debug output
-
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!raw) {
-      throw new Error("Respons dari Gemini kosong atau format tidak dikenali.");
+      throw new Error("Respons dari Gemini kosong atau tidak valid.");
     }
 
     const keywords = raw
