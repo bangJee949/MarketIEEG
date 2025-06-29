@@ -28,16 +28,17 @@ async function generateKeywords() {
   status.innerHTML = "⏳ Menghasilkan keyword...";
 
   const prompt = `
-You are a metadata assistant for stock contributors.
+You are a metadata assistant for Adobe Stock contributors.
 
-Please generate exactly 45 relevant keywords for Adobe Stock based on this title: "${title}".
+Please generate exactly 45 relevant, one-word-only keywords in English based on the title: "${title}".
 
-Rules:
-- Keywords must be in English and only one word each (e.g., "sunset", not "sunset light").
-- No brand names, no proper names unless generic.
-- The first keyword must be taken directly from the title and be the main subject.
-- Separate all keywords using only commas. Do not use line breaks, numbers, or bullet points.
-- Follow Adobe Stock keyword guidelines strictly.
+⚠️ RULES:
+- Only one word per keyword, all lowercase.
+- No proper names, no punctuation, no repetition.
+- The first keyword must be the most relevant and come directly from the title.
+- Separate keywords using commas only.
+- Do not use line breaks, numbers, or explanations.
+Just return 45 keywords as: keyword1, keyword2, keyword3, ...
 `;
 
   try {
@@ -57,23 +58,23 @@ Rules:
     const data = await res.json();
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    if (!raw || !raw.includes(",")) {
-      throw new Error("Respons dari API tidak sesuai format.");
-    }
+    if (!raw) throw new Error("Respons kosong dari Gemini");
 
+    // Normalisasi pemisahan (bisa koma, newline, bullet, angka, strip)
     const keywords = raw
-      .split(",")
+      .replace(/\\n|\\r/g, ",")             // newline → koma
+      .replace(/\\d+\\.|•|\\-/g, ",")        // angka/bullet → koma
+      .split(",")                           // pisah pakai koma
       .map(k => k.trim().toLowerCase())
-      .filter(k => k.length > 1)
+      .filter(k => k && /^[a-zA-Z]+$/.test(k)) // hanya huruf
       .slice(0, 45);
 
-    if (keywords.length === 0) {
-      throw new Error("Tidak ada keyword ditemukan.");
-    }
+    if (keywords.length < 10) throw new Error("Keyword terlalu sedikit: " + keywords.length);
 
     output.value = keywords.join(", ");
     status.innerHTML = "✅ Keyword berhasil dibuat";
     status.style.color = "green";
+
   } catch (e) {
     console.error(e);
     status.innerHTML = "⚠️ Gagal menghasilkan keyword. Periksa API key atau format judul.";
