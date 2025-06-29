@@ -56,6 +56,8 @@ Please return exactly 45 relevant keywords in English, based on the title above.
     );
 
     const data = await res.json();
+    console.log("Full response:", data); // Debug
+
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!raw) {
@@ -86,7 +88,6 @@ Please return exactly 45 relevant keywords in English, based on the title above.
 
 function copyKeywords() {
   const output = document.getElementById("output");
-  output.select();
   document.execCommand("copy");
   alert("✅ Keyword berhasil dicopy!");
 }
